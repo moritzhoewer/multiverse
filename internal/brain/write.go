@@ -40,6 +40,17 @@ func (b *Brain) Write(p WriteParams) (string, error) {
 	if rel == "" {
 		return "", errors.New("a note needs a --path or a --title")
 	}
+	// Content notes must live in a directory. Lint applies the split-tag and
+	// freshness rules only to notes whose path contains a "/", so a root-level
+	// content note is silently exempt from every standing rule — it looks clean
+	// and is not. The root is reserved for governance/navigation notes.
+	if !strings.Contains(rel, "/") {
+		if t := orDefault(p.Type, "reference"); t != "meta" && t != "moc" {
+			return "", fmt.Errorf("a %s note must live in a directory, not the vault root: "+
+				"pass --dir <dir> (or --path <dir>/%s). The root is reserved for type: meta / moc "+
+				"governance notes; root-level content notes are silently exempt from lint", t, rel)
+		}
+	}
 	// Taxonomy binds content notes only — root navigation notes, templates and
 	// type: meta stay exempt, mirroring the split/freshness rules.
 	if strings.Contains(rel, "/") && !strings.HasPrefix(strings.ToLower(rel), "templates/") && orDefault(p.Type, "reference") != "meta" {

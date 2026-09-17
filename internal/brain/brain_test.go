@@ -24,6 +24,43 @@ func TestWriteRequiresSummary(t *testing.T) {
 	}
 }
 
+func TestWriteRejectsContentNoteAtVaultRoot(t *testing.T) {
+	b := newBrain(t)
+
+	// A content note with no --dir would land at the root, where lint's split-tag
+	// and freshness rules do not apply.
+	_, err := b.Write(WriteParams{Title: "Rootless Fact", Summary: "a durable fact", Tags: []string{"domain"}})
+	if err == nil {
+		t.Fatal("expected a content note without --dir to be rejected")
+	}
+	if !strings.Contains(err.Error(), "vault root") {
+		t.Fatalf("expected a vault-root error, got %v", err)
+	}
+
+	// Same via an explicit root-level --path.
+	if _, err := b.Write(WriteParams{
+		Path: "rootless-fact.md", Summary: "a durable fact", Tags: []string{"domain"},
+	}); err == nil {
+		t.Fatal("expected a root-level --path content note to be rejected")
+	}
+
+	// Governance notes legitimately live at the root.
+	for _, typ := range []string{"meta", "moc"} {
+		if _, err := b.Write(WriteParams{
+			Title: "Governance " + typ, Type: typ, Summary: "how this brain is organized",
+		}); err != nil {
+			t.Fatalf("type %s should be allowed at the root, got %v", typ, err)
+		}
+	}
+
+	// And a content note with a directory is fine.
+	if _, err := b.Write(WriteParams{
+		Title: "Rootless Fact", Dir: "domain", Summary: "a durable fact", Tags: []string{"domain"},
+	}); err != nil {
+		t.Fatalf("write with --dir: %v", err)
+	}
+}
+
 func TestWriteThenLoadRoundTrip(t *testing.T) {
 	b := newBrain(t)
 	rel, err := b.Write(WriteParams{
