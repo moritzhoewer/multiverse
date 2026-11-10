@@ -40,6 +40,9 @@ holds the fact, wire lateral links, create a new note only when the fact is new.
 - Extend an existing note with @@multi --brain %[1]s append@@, or edit its file directly
   to rewrite a section of the BODY (never the front matter, except @@status@@/@@updated@@
   when deprecating), then let multi commit.
+- NEVER start a @@--body@@ with an H1 (@@# Heading@@). @@multi write@@ already emits the
+  note's @@# <title>@@ from --title; a body that opens with its own H1 renders two stacked
+  H1s. Begin the body with prose, or with an H2 (@@## Section@@) if it needs a heading.
 
 ## How this brain is laid out (filing rules)
 - **Directory = domain, type = front matter.** Top-level directories are domains
