@@ -22,7 +22,7 @@ func writeCmd() *cli.Command {
 		Flags: withBrain(
 			&cli.StringFlag{Name: "title", Usage: "note title (also the filename unless --path)"},
 			&cli.StringFlag{Name: "path", Usage: "explicit vault-relative path"},
-			&cli.StringFlag{Name: "dir", Usage: "directory for the note when using --title"},
+			&cli.StringFlag{Name: "dir", Usage: "directory for the note when using --title (required for content notes; only type: meta / moc may live at the vault root)"},
 			&cli.StringFlag{Name: "type", Value: "reference", Usage: "moc|reference|decision|hub|meta"},
 			&cli.StringFlag{Name: "status", Value: "active", Usage: "active|draft|deprecated"},
 			&cli.BoolFlag{Name: "pinned", Usage: "surface this note in `multi wake-up`"},
