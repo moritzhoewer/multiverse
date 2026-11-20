@@ -59,6 +59,9 @@ holds the fact, wire lateral links, create a new note only when the fact is new.
   contradicts something already in the note, say so in @@freshness@@ too, and leave an
   in-body pointer at the superseded section rather than silently leaving both readings standing.
   Bump @@retrieved@@ when you added newly gathered facts (not for a pure backlink edit).
+- NEVER start a @@--body@@ with an H1 (@@# Heading@@). @@multi write@@ already emits the
+  note's @@# <title>@@ from --title; a body that opens with its own H1 renders two stacked
+  H1s. Begin the body with prose, or with an H2 (@@## Section@@) if it needs a heading.
 
 ## How this brain is laid out (filing rules)
 %[5]s
